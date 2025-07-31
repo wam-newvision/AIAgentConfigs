@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tab-Konfiguration</title>
+    <meta charset="utf-8" />
+    <script src="https://statics.teams.cdn.office.net/sdk/v1.12.0/js/MicrosoftTeams.min.js"></script>
+</head>
+<body>
+    <h2>Tab konfigurieren</h2>
+    <input id="titleInput" type="text" placeholder="Tab-Name, z.B. Projekt X" />
+    <button id="saveBtn">Speichern (intern)</button>
+
+    <script>
+        let tabName = "";
+
+        // Teams SDK initialisieren
+        microsoftTeams.app.initialize();
+
+        // Sobald was eingegeben wird: Speichern erlauben!
+        document.getElementById("titleInput").addEventListener("input", function(e) {
+            tabName = e.target.value;
+            microsoftTeams.pages.config.setValidityState(tabName.trim().length > 0);
+        });
+
+        // Optional: Button auch für Debug-Flow
+        document.getElementById("saveBtn").onclick = function () {
+            alert("Im Teams-Konfigurations-Dialog speichern Sie über den Teams-Button rechts unten!");
+        };
+
+        // Teams-Konfigurationslogik für den SPEICHERN-Button
+        microsoftTeams.pages.config.registerOnSaveHandler(function (saveEvent) {
+            // Das ist das "echte" Speichern im Teams-Dialog!
+            microsoftTeams.pages.config.setConfig({
+                entityId: tabName || "MeinTab",
+                contentUrl: "https://deinserver.de/projectmanager/tab.html?name=" + encodeURIComponent(tabName),
+                websiteUrl: "https://deinserver.de/projectmanager/",
+                suggestedDisplayName: tabName || "Project Manager"
+            });
+            saveEvent.notifySuccess();
+        });
+
+        // Initial: Speichern deaktiviert (bis Text eingegeben wurde)
+        microsoftTeams.pages.config.setValidityState(false);
+    </script>
+</body>
+</html>
