@@ -6,16 +6,16 @@
     <script src="https://statics.teams.cdn.office.net/sdk/v1.12.0/js/MicrosoftTeams.min.js"></script>
 </head>
 <body>
-    <h2>Tab konfigurieren</h2>
-    <input id="titleInput" type="text" placeholder="Tab-Name, z.B. Projekt X" />
-    <button id="saveBtn">Speichern (intern)</button>
+    <h2>AI Tab einrichten</h2>
+    <input id="titleInput" type="text" placeholder="Tab-Name, z.B. Projekt Manager" />
+    <button id="saveBtn">Speichern aktivieren</button>
 
     <script>
         let tabName = "";
 
         microsoftTeams.app.initialize().then(() => {
             // Initial: Speichern deaktiviert
-            microsoftTeams.pages.config.setValidityState(false);
+            microsoftTeams.pages.config.setValidityState(true);
 
             // Eingabe aktiviert Teams-Speichern
             document.getElementById("titleInput").addEventListener("input", function(e) {
