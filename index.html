@@ -1,34 +1,44 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Willkommen im Teams Tab!</title>
-    <!-- Teams SDK -->
-    <script src="https://statics.teams.cdn.office.net/sdk/v1.11.0/js/MicrosoftTeams.min.js"></script>
-    <script>
-        // Teams-Integration initialisieren
-        microsoftTeams.initialize();
-
-        // Tab ist sofort gültig → "Speichern" wird aktiviert
-        microsoftTeams.settings.setValidityState(true);
-
-        // Speichern-Handler: Wird beim Klick auf "Speichern" im Tab-Konfigurationsdialog aufgerufen
-        microsoftTeams.settings.registerOnSaveHandler(function (saveEvent) {
-            microsoftTeams.settings.setSettings({
-                // Zeigt denselben Tab nach dem Hinzufügen an (ggf. anpassen!)
-                contentUrl: window.location.origin + window.location.pathname,
-                entityId: "myUniqueTabId" // Ein beliebiger Wert
-            });
-            saveEvent.notifySuccess();
-        });
-    </script>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 2em; }
-        h1 { color: #07687d; }
-    </style>
+  <meta charset="utf-8" />
+  <title>Agent Chat im Teams Tab</title>
+  <style>
+    body { font-family: Arial; }
+    #chatbox { width: 90%; height: 400px; border: 1px solid #ccc; padding: 10px; overflow-y: auto; margin-bottom: 8px; }
+    #msg { width: 80%; }
+    .user { color: #07687d; }
+    .agent { color: #444; }
+  </style>
 </head>
 <body>
-    <h1>Willkommen im Tab!</h1>
-    <p>Diese Seite ist als Teams-Tab (und Konfiguration) nutzbar.<br>
-    Der Speichern-Button funktioniert jetzt!</p>
+  <h2>Mein Agent-Chat im Teams Tab</h2>
+  <div id="chatbox"></div>
+  <input id="msg" autocomplete="off" placeholder="Nachricht eingeben..." />
+  <button onclick="sendMsg()">Senden</button>
+  <script>
+    function appendMsg(who, text) {
+      const div = document.createElement('div');
+      div.className = who;
+      div.innerText = (who === 'user' ? 'Du: ' : 'Agent: ') + text;
+      document.getElementById('chatbox').appendChild(div);
+      document.getElementById('chatbox').scrollTop = 9999;
+    }
+
+    async function sendMsg() {
+      const msg = document.getElementById('msg').value;
+      if (!msg.trim()) return;
+      appendMsg('user', msg);
+      document.getElementById('msg').value = '';
+      // <--- HIER DEINEN ECHTEN ENDPOINT EINTRAGEN! --->
+      const resp = await fetch('https://DEIN-BACKEND-ENDPOINT/echo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: msg })
+      });
+      const data = await resp.json();
+      appendMsg('agent', data.reply || data.response || "Fehler bei Antwort");
+    }
+  </script>
 </body>
 </html>
