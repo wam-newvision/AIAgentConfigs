@@ -1,14 +1,34 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Mein Teams Tab</title>
+    <title>Willkommen im Teams Tab!</title>
+    <!-- Teams SDK -->
     <script src="https://statics.teams.cdn.office.net/sdk/v1.11.0/js/MicrosoftTeams.min.js"></script>
     <script>
-      microsoftTeams.initialize();
-      microsoftTeams.settings.setValidityState(true);
+        // Teams-Integration initialisieren
+        microsoftTeams.initialize();
+
+        // Tab ist sofort gültig → "Speichern" wird aktiviert
+        microsoftTeams.settings.setValidityState(true);
+
+        // Speichern-Handler: Wird beim Klick auf "Speichern" im Tab-Konfigurationsdialog aufgerufen
+        microsoftTeams.settings.registerOnSaveHandler(function (saveEvent) {
+            microsoftTeams.settings.setSettings({
+                // Zeigt denselben Tab nach dem Hinzufügen an (ggf. anpassen!)
+                contentUrl: window.location.origin + window.location.pathname,
+                entityId: "myUniqueTabId" // Ein beliebiger Wert
+            });
+            saveEvent.notifySuccess();
+        });
     </script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2em; }
+        h1 { color: #07687d; }
+    </style>
 </head>
 <body>
     <h1>Willkommen im Tab!</h1>
+    <p>Diese Seite ist als Teams-Tab (und Konfiguration) nutzbar.<br>
+    Der Speichern-Button funktioniert jetzt!</p>
 </body>
 </html>
